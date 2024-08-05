@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL-TTS Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #000000;
+        }
+        .container {
+            max-width: 95%; /* Use 90% of the screen width */
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header .authors {
+            font-size: 1.2em;
+            color: #2e2c2c;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        header div.abstract {
+            font-size: 1.2em;
+            color: #111111;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        header .links {
+            margin-bottom: 20px;
+        }
+        header .links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #0066cc;
+            font-size: large;
+        }
+        header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+        section {
+            margin-bottom: 30px;
+        }
+        h2, h3 {
+            margin-bottom: 10px;
+        }
+        .abstract {
+            font-size: 1.1em;
+            color: #292929;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        audio {
+            width: 100%;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SSL-TTS: Leveraging Self-Supervised Embeddings and kNN Retrieval <br> for Zero-Shot Multi-speaker TTS</h1>
+            <div class="authors">Karl El Hajal, Ajinkya Kulkarni, Enno Hermann, Mathew Magimai.-Doss</div>
+            <div class="links">
+                <!-- <a href="link-to-paper" target="_blank">Paper</a> -->
+                <!-- <a href="https://github.com/idiap/SSL-TTS" target="_blank">Code</a> -->
+            </div>
+            <div class="abstract">Abstract</div>
+            <p class="abstract">While recent zero-shot multispeaker text-to-speech (TTS) models achieve impressive results, they typically rely on extensive transcribed speech datasets from numerous speakers and intricate training pipelines. Meanwhile, self-supervised learning (SSL) speech features have emerged as effective intermediate representations for TTS. It was also observed that SSL features from different speakers that are linearly close share phonetic information while maintaining individual speaker identity, which enables straight-forward and robust voice cloning. In this study, we introduce SSL-TTS, a lightweight and efficient zero-shot TTS framework trained on transcribed speech from a single speaker. SSL-TTS leverages SSL features and retrieval methods for simple and robust zero-shot multi-speaker synthesis. Objective and subjective evaluations show that our approach achieves performance comparable to state-of-the-art models that require significantly larger training datasets. The low training data requirements mean that SSL-TTS is well suited for the development of multi-speaker TTS systems for low-resource domains and languages. We also introduce an interpolation parameter which enables fine control over the output speech by blending voices.</p>
+        </header>
+        
+        <section>
+            <h2>Zero-shot Multi-speaker Examples from LibriSpeech test-clean:</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Speaker</th>
+                        <th>Ground Truth</th>
+                        <th>GlowTTS-SSL</th>
+                        <th>GradTTS-SSL</th>
+                        <th>HierSpeech++</th>
+                        <th>XTTS</th>
+                        <th>YourTTS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>7127</td>
+                        <td><audio controls><source src="wavs/comparison/7127/GT_7127.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7127/glowtts_ssl_7127.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7127/gradtts_ssl_7127.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7127/hierspeechpp_7127.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7127/xtts_7127.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7127/yourtts_7127.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>7729</td>
+                        <td><audio controls><source src="wavs/comparison/7729/GT_7729.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7729/glowtts_ssl_7729.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7729/gradtts_ssl_7729.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7729/hierspeechpp_7729.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7729/xtts_7729.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/7729/yourtts_7729.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>6829</td>
+                        <td><audio controls><source src="wavs/comparison/6829/GT_6829.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/6829/glowtts_ssl_6829.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/6829/gradtts_ssl_6829.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/6829/hierspeechpp_6829.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/6829/xtts_6829.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/6829/yourtts_6829.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>8555</td>
+                        <td><audio controls><source src="wavs/comparison/8555/GT_8555.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/8555/glowtts_ssl_8555.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/8555/gradtts_ssl_8555.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/8555/hierspeechpp_8555.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/8555/xtts_8555.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/comparison/8555/yourtts_8555.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section>
+            <h2>Controllability Examples (varying  λ to blend source and target voices):</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Speaker</th>
+                        <th>Model</th>
+                        <th>λ = 0</th>
+                        <th>λ = 0.25</th>
+                        <th>λ = 0.50</th>
+                        <th>λ = 0.75</th>
+                        <th>λ = 1</th>
+                        <th>λ = 1.25</th>
+                        <th>λ = 1.50</th>
+                        <th>λ = 1.75</th>
+                        <th>λ = 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Speaker 7127</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7127/glowtts_ssl_7127_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>Speaker 7729</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/7729/glowtts_ssl_7729_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>Speaker 6829</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/6829/glowtts_ssl_6829_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>Speaker 8555</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/controllability/8555/glowtts_ssl_8555_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section>
+            <h2>Bonus Material</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Speaker</th>
+                        <th>Model</th>
+                        <th>λ = 0</th>
+                        <th>λ = 0.25</th>
+                        <th>λ = 0.50</th>
+                        <th>λ = 0.75</th>
+                        <th>λ = 1</th>
+                        <th>λ = 1.25</th>
+                        <th>λ = 1.50</th>
+                        <th>λ = 1.75</th>
+                        <th>λ = 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Whispered <br> (Thorsten Emo)</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/whisper/glowtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>Angry <br> (Thorsten Emo)</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/angry/glowtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>AniSpeech 0</td>
+                        <td>GradTTS-SSL</td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/0/gradtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>AniSpeech  14</td>
+                        <td>GradTTS-SSL</td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/14/gradtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>AniSpeech 21</td>
+                        <td>GradTTS-SSL</td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/21/gradtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>AniSpeech 23</td>
+                        <td>GradTTS-SSL</td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/23/gradtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                    <tr>
+                        <td>AniSpeech 154</td>
+                        <td>GlowTTS-SSL</td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate0.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate25.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate50.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate75.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate100.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate125.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate150.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate175.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                        <td><audio controls><source src="wavs/anispeech/154/glowtts_ssl_rate200.wav" type="audio/mp3">Your browser does not support the audio element.</audio></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>
