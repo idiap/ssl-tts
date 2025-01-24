@@ -1,3 +1,3 @@
-# ssl-tts
+# kNN-TTS
 
 Coming soon
